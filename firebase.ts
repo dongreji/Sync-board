@@ -4,6 +4,7 @@ import { getDatabase } from 'firebase/database';
 // IMPORTANT: Replace with your own Firebase project configuration
 // You can get this from the Firebase console:
 // Project settings > General > Your apps > Web app > Firebase SDK snippet > Config
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: "AIzaSyCsFWIuTLgCmbQ7tTULIrzQvObLYzf6UPs",
   authDomain: "sync-bo.firebaseapp.com",

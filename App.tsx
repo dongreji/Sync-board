@@ -6,6 +6,8 @@ import ConfirmationModal from './components/ConfirmationModal';
 import QRCodeModal from './components/QRCodeModal';
 import Toast from './components/Toast';
 import Icon from './components/Icon';
+import AdminLoginModal from './components/AdminLoginModal';
+import AdminPanel from './components/AdminPanel';
 import { isFirebaseConfigured } from './firebase';
 
 const generateId = () => {
@@ -109,6 +111,8 @@ const ClipboardView: React.FC<ClipboardViewProps> = ({ clipboardId }) => {
   const [isQrModalOpen, setQrModalOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [isCopied, setIsCopied] = useState(false);
+  const [isLoginModalOpen, setLoginModalOpen] = useState(false);
+  const [isAdminPanelOpen, setAdminPanelOpen] = useState(false);
 
   const shareableLink = window.location.href;
 
@@ -147,8 +151,12 @@ const ClipboardView: React.FC<ClipboardViewProps> = ({ clipboardId }) => {
     });
   }, [shareableLink, showToast]);
 
+  const handleLoginSuccess = () => {
+    setAdminPanelOpen(true);
+  };
+
   return (
-    <div className="min-h-screen bg-slate-900 text-slate-200 font-sans">
+    <div className="min-h-screen bg-slate-900 text-slate-200 font-sans flex flex-col">
       <header className="bg-slate-900/70 backdrop-blur-lg border-b border-slate-700 p-4 sticky top-0 z-20">
         <div className="container mx-auto flex justify-between items-center gap-2 sm:gap-4">
           <h1 className="text-xl sm:text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-cyan-400">
@@ -194,7 +202,7 @@ const ClipboardView: React.FC<ClipboardViewProps> = ({ clipboardId }) => {
         </div>
       </header>
       
-      <main className="container mx-auto p-4 md:p-6 max-w-4xl">
+      <main className="container mx-auto p-4 md:p-6 max-w-4xl flex-grow">
         <ClipboardContent
           clipboardId={clipboardId}
           items={items}
@@ -205,6 +213,17 @@ const ClipboardView: React.FC<ClipboardViewProps> = ({ clipboardId }) => {
           showToast={showToast}
         />
       </main>
+
+      <footer className="text-center p-4 text-slate-600 text-sm flex-shrink-0">
+        <button
+          onClick={() => setLoginModalOpen(true)}
+          className="hover:text-slate-400 hover:underline transition-colors"
+          aria-label="Open Admin Panel"
+        >
+          Admin Panel
+        </button>
+      </footer>
+
 
       <QRCodeModal
         isOpen={isQrModalOpen}
@@ -223,6 +242,17 @@ const ClipboardView: React.FC<ClipboardViewProps> = ({ clipboardId }) => {
       )}
 
       <Toast message={toastMessage} onClose={() => setToastMessage(null)} />
+
+      <AdminLoginModal
+        isOpen={isLoginModalOpen}
+        onClose={() => setLoginModalOpen(false)}
+        onLoginSuccess={handleLoginSuccess}
+      />
+      
+      <AdminPanel
+        isOpen={isAdminPanelOpen}
+        onClose={() => setAdminPanelOpen(false)}
+      />
     </div>
   );
 }

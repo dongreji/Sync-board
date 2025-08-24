@@ -1,18 +1,17 @@
-import { initializeApp } from 'firebase/app';
+import * as firebaseApp from 'firebase/app';
 import { getDatabase } from 'firebase/database';
 
 // IMPORTANT: Replace with your own Firebase project configuration
 // You can get this from the Firebase console:
 // Project settings > General > Your apps > Web app > Firebase SDK snippet > Config
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyCsFWIuTLgCmbQ7tTULIrzQvObLYzf6UPs",
-  authDomain: "sync-bo.firebaseapp.com",
-  projectId: "sync-bo",
-  storageBucket: "sync-bo.firebasestorage.app",
-  messagingSenderId: "641455814582",
-  appId: "1:641455814582:web:2c4de9567d642a41473317",
-  measurementId: "G-XQXPWB04BG"
+  apiKey: "AIzaSyXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+  authDomain: "your-project-id.firebaseapp.com",
+  databaseURL: "https://your-project-id-default-rtdb.firebaseio.com",
+  projectId: "your-project-id",
+  storageBucket: "your-project-id.appspot.com",
+  messagingSenderId: "000000000000",
+  appId: "1:000000000000:web:000000000000000000"
 };
 
 // For this public clipboard to work, you must also set your Realtime Database security rules to be public.
@@ -30,5 +29,5 @@ const firebaseConfig = {
 export const isFirebaseConfigured = firebaseConfig.apiKey !== "AIzaSyXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" && firebaseConfig.projectId !== "your-project-id";
 
 // Initialize Firebase only if it has been configured
-const app = isFirebaseConfigured ? initializeApp(firebaseConfig) : null;
+const app = isFirebaseConfigured ? firebaseApp.initializeApp(firebaseConfig) : null;
 export const db = app ? getDatabase(app) : null;

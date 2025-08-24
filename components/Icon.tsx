@@ -1,6 +1,6 @@
 import React from 'react';
 
-type IconName = 'plus' | 'copy' | 'edit' | 'trash' | 'close' | 'clipboard' | 'check' | 'x' | 'search' | 'qr';
+type IconName = 'plus' | 'copy' | 'edit' | 'trash' | 'close' | 'clipboard' | 'check' | 'x' | 'search' | 'qr' | 'shield';
 
 interface IconProps {
   name: IconName;
@@ -57,7 +57,12 @@ const ICONS: Record<IconName, React.ReactNode> = {
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
       <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 4.5A.75.75 0 0 1 4.5 3.75h4.5a.75.75 0 0 1 .75.75v4.5a.75.75 0 0 1-.75.75h-4.5a.75.75 0 0 1-.75-.75v-4.5zM3.75 14.25A.75.75 0 0 1 4.5 13.5h4.5a.75.75 0 0 1 .75.75v4.5a.75.75 0 0 1-.75.75h-4.5a.75.75 0 0 1-.75-.75v-4.5zM13.5 4.5A.75.75 0 0 1 14.25 3.75h4.5a.75.75 0 0 1 .75.75v4.5a.75.75 0 0 1-.75.75h-4.5a.75.75 0 0 1-.75-.75v-4.5zM15 15.75h.008v.008H15v-.008zm.75 2.25h.008v.008H15.75v-.008zm1.5-1.5h.008v.008H17.25v-.008zm-5.25 1.5h.008v.008H12v-.008zm2.25-3h.008v.008H14.25v-.008zm1.5 1.5h.008v.008H15.75v-.008zm-3-1.5h.008v.008H12.75v-.008zm1.5 3h.008v.008H14.25v-.008zm1.5-3h.008v.008H15.75v-.008zm1.5 1.5h.008v.008H17.25v-.008zm-1.5 1.5h.008v.008H15.75v-.008z" />
     </svg>
-  )
+  ),
+  shield: (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.286Zm0 13.036h.008v.008H12v-.008Z" />
+    </svg>
+  ),
 };
 
 const Icon: React.FC<IconProps> = ({ name, className = 'w-6 h-6' }) => {

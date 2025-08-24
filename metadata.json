@@ -1,0 +1,5 @@
+{
+  "name": "SyncBoard - Universal Clipboard",
+  "description": "A multi-device clipboard application that allows you to manage, edit, and sync text snippets across multiple clipboards. Create, delete, and clear clipboards with ease.",
+  "requestFramePermissions": []
+}

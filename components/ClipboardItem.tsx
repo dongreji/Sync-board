@@ -33,6 +33,10 @@ const ClipboardItemComponent: React.FC<ClipboardItemProps> = ({ item, onDelete, 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
+    setContent(item.content);
+  }, [item.content]);
+
+  useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto'; // Reset height to recalculate
       textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;

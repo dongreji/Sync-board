@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import type { ClipboardItem } from './types';
-import useLocalStorage from './hooks/useLocalStorage';
+import { useSyncBoard } from './hooks/useSyncBoard';
 import ClipboardContent from './components/ClipboardContent';
 import ConfirmationModal from './components/ConfirmationModal';
 import QRCodeModal from './components/QRCodeModal';
@@ -13,22 +13,48 @@ const generateId = () => {
   return `${prefix}${randomPart}`;
 };
 
+const isValidFirebaseKey = (key: string): boolean => {
+  // Firebase keys must be non-empty and must not contain '.', '#', '$', '[', or ']'
+  if (!key) return false;
+  return !/[.#$\[\]]/.test(key);
+};
+
 const App: React.FC = () => {
   const [clipboardId, setClipboardId] = useState<string | null>(null);
 
-  useEffect(() => {
-    const path = window.location.pathname;
-    if (path === '/') {
-      const newId = generateId();
-      window.history.pushState({}, '', `/${newId}`);
-      setClipboardId(newId);
-    } else {
-      setClipboardId(path.substring(1));
+  const getValidIdFromPath = (path: string): string | null => {
+    const pathSegments = path.split('/').filter(Boolean);
+    const lastSegment = pathSegments.length > 0 ? pathSegments[pathSegments.length - 1] : null;
+    
+    if (lastSegment && isValidFirebaseKey(lastSegment)) {
+      return lastSegment;
+    }
+    
+    if (lastSegment) {
+        console.warn(`Invalid characters found in path segment: "${lastSegment}". A new SyncBoard will be used.`);
     }
 
+    return null;
+  }
+
+  useEffect(() => {
+    let id = getValidIdFromPath(window.location.pathname);
+
+    if (!id) {
+      id = generateId();
+      window.history.replaceState({}, '', `/${id}`);
+    }
+    setClipboardId(id);
+
     const handlePopState = () => {
-        setClipboardId(window.location.pathname.substring(1));
+        let newId = getValidIdFromPath(window.location.pathname);
+        if (!newId) {
+            newId = generateId();
+            window.history.replaceState({}, '', `/${newId}`);
+        }
+        setClipboardId(newId);
     };
+
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
 
@@ -50,7 +76,7 @@ interface ClipboardViewProps {
 }
 
 const ClipboardView: React.FC<ClipboardViewProps> = ({ clipboardId }) => {
-  const [items, setItems] = useLocalStorage<ClipboardItem[]>(`clipboard-items-${clipboardId}`, []);
+  const { items, addItem, updateItem, deleteItem, clearItems } = useSyncBoard(clipboardId);
   const [isClearConfirmationOpen, setClearConfirmationOpen] = useState(false);
   const [isQrModalOpen, setQrModalOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -63,28 +89,21 @@ const ClipboardView: React.FC<ClipboardViewProps> = ({ clipboardId }) => {
   }, []);
   
   const handleAddItem = (content: string) => {
-    const newItem: ClipboardItem = {
-      id: crypto.randomUUID(),
-      content,
-      createdAt: new Date().toISOString(),
-    };
-    setItems(currentItems => [newItem, ...currentItems]);
+    addItem(content);
   };
 
   const handleUpdateItem = (itemId: string, newContent: string) => {
-    setItems(currentItems => 
-        currentItems.map(item => item.id === itemId ? { ...item, content: newContent } : item)
-    );
+    updateItem(itemId, newContent);
     showToast('Item updated');
   };
 
   const handleDeleteItem = (itemId: string) => {
-    setItems(currentItems => currentItems.filter(item => item.id !== itemId));
+    deleteItem(itemId);
     showToast('Item deleted');
   };
   
   const handleClearClipboard = () => {
-    setItems([]);
+    clearItems();
     setClearConfirmationOpen(false);
     showToast('Clipboard cleared');
   };

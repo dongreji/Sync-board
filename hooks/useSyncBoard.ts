@@ -12,7 +12,10 @@ export function useSyncBoard(clipboardId: string) {
   const [items, setItems] = useState<ClipboardItem[]>([]);
 
   useEffect(() => {
-    if (!clipboardId) return;
+    if (!clipboardId || !db) {
+        if (!db) console.warn("SyncBoard: Firebase not configured. Real-time sync is disabled.");
+        return;
+    };
 
     const itemsRef = ref(db, `clipboards/${clipboardId}/items`);
     
@@ -34,6 +37,7 @@ export function useSyncBoard(clipboardId: string) {
   }, [clipboardId]);
 
   const addItem = (content: string) => {
+    if (!db) return;
     const itemsRef = ref(db, `clipboards/${clipboardId}/items`);
     const newItemRef = push(itemsRef);
     const newItem: OmittedClipboardItem = {
@@ -44,6 +48,7 @@ export function useSyncBoard(clipboardId: string) {
   };
 
   const updateItem = (itemId: string, newContent: string) => {
+    if (!db) return;
     const itemContentRef = ref(db, `clipboards/${clipboardId}/items/${itemId}/content`);
     set(itemContentRef, newContent);
   };
@@ -51,11 +56,13 @@ export function useSyncBoard(clipboardId: string) {
 
 
   const deleteItem = (itemId: string) => {
+    if (!db) return;
     const itemRef = ref(db, `clipboards/${clipboardId}/items/${itemId}`);
     remove(itemRef);
   };
 
   const clearItems = () => {
+    if (!db) return;
     const itemsRef = ref(db, `clipboards/${clipboardId}/items`);
     remove(itemsRef);
   };
